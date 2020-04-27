@@ -18,11 +18,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CardContent from '@material-ui/core/CardContent';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
+//import BlurOnIcon from '@material-ui/icons/BlurOn';
 
 import axios from 'axios';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { authMiddleWare } from '../util/auth';
+
+
 
 const styles = (theme) => ({
 	content: {
@@ -93,15 +96,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-class todo extends Component {
+class Iot extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			todos: '',
+			iots: '',
 			title: '',
 			body: '',
-			todoId: '',
+			iotId: '',
+			state: '',
 			errors: [],
 			open: false,
 			uiLoading: true,
@@ -128,7 +132,7 @@ class todo extends Component {
 			.get('/iots')
 			.then((response) => {
 				this.setState({
-					todos: response.data,
+					iots: response.data,
 					uiLoading: false
 				});
 			})
@@ -141,9 +145,9 @@ class todo extends Component {
 		authMiddleWare(this.props.history);
 		const authToken = localStorage.getItem('AuthToken');
 		axios.defaults.headers.common = { Authorization: `${authToken}` };
-		let todoId = data.todo.todoId;
+		let iotId = data.iot.iotId;
 		axios
-			.delete(`iot/${todoId}`)
+			.delete(`iot/${iotId}`)
 			.then(() => {
 				window.location.reload();
 			})
@@ -154,9 +158,10 @@ class todo extends Component {
 
 	handleEditClickOpen(data) {
 		this.setState({
-			title: data.todo.title,
-			body: data.todo.body,
-			todoId: data.todo.todoId,
+			title: data.iot.title,
+			body: data.iot.body,
+			iotId: data.iot.iotId,
+			status: data.iot.status,
 			buttonType: 'Edit',
 			open: true
 		});
@@ -164,8 +169,10 @@ class todo extends Component {
 
 	handleViewOpen(data) {
 		this.setState({
-			title: data.todo.title,
-			body: data.todo.body,
+			iotId: data.iot.iotId,
+			title: data.iot.title,
+			body: data.iot.body,
+			status: data.iot.status,
 			viewOpen: true
 		});
 	}
@@ -197,9 +204,10 @@ class todo extends Component {
 
 		const handleClickOpen = () => {
 			this.setState({
-				todoId: '',
+				iotId: '',
 				title: '',
 				body: '',
+				status: '',
 				buttonType: '',
 				open: true
 			});
@@ -208,22 +216,24 @@ class todo extends Component {
 		const handleSubmit = (event) => {
 			authMiddleWare(this.props.history);
 			event.preventDefault();
-			const userTodo = {
+			const useriot = {
+				iotId:this.state.iotId,
 				title: this.state.title,
-				body: this.state.body
+				body: this.state.body,
+				status: this.state.status,
 			};
 			let options = {};
 			if (this.state.buttonType === 'Edit') {
 				options = {
-					url: `/iot/${this.state.todoId}`,
+					url: `/iot/${this.state.iotId}`,
 					method: 'put',
-					data: userTodo
+					data: useriot
 				};
 			} else {
 				options = {
 					url: '/iot',
 					method: 'post',
-					data: userTodo
+					data: useriot
 				};
 			}
 			const authToken = localStorage.getItem('AuthToken');
@@ -262,7 +272,7 @@ class todo extends Component {
 					<IconButton
 						className={classes.floatingButton}
 						color="primary"
-						aria-label="Add Todo"
+						aria-label="Add IOT"
 						onClick={handleClickOpen}
 					>
 						<AddCircleIcon style={{ fontSize: 60 }} />
@@ -274,7 +284,7 @@ class todo extends Component {
 									<CloseIcon />
 								</IconButton>
 								<Typography variant="h6" className={classes.title}>
-									{this.state.buttonType === 'Edit' ? 'Edit Todo' : 'Create a new Todo'}
+									{this.state.buttonType === 'Edit' ? 'Edit IOT' : 'Create a new IOT'}
 								</Typography>
 								<Button
 									autoFocus
@@ -294,10 +304,10 @@ class todo extends Component {
 										variant="outlined"
 										required
 										fullWidth
-										id="todoTitle"
-										label="Todo Title"
+										id="iotTitle"
+										label="iot Title"
 										name="title"
-										autoComplete="todoTitle"
+										autoComplete="iot Title"
 										helperText={errors.title}
 										value={this.state.title}
 										error={errors.title ? true : false}
@@ -309,17 +319,35 @@ class todo extends Component {
 										variant="outlined"
 										required
 										fullWidth
-										id="todoDetails"
-										label="Todo Details"
+										id="iotDetails"
+										label="iot Details"
 										name="body"
-										autoComplete="todoDetails"
+										autoComplete="iotDetails"
 										multiline
-										rows={25}
-										rowsMax={25}
+										rows={2}
+										rowsMax={10}
 										helperText={errors.body}
 										error={errors.body ? true : false}
 										onChange={this.handleChange}
 										value={this.state.body}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="iotDetails"
+										label="iot status"
+										name="status"
+										autoComplete="iotDetails"
+										multiline
+										rows={2}
+										rowsMax={10}
+										helperText={errors.body}
+										error={errors.body ? true : false}
+										onChange={this.handleChange}
+										value={this.state.status}
 									/>
 								</Grid>
 							</Grid>
@@ -327,31 +355,36 @@ class todo extends Component {
 					</Dialog>
 
 					<Grid container spacing={2}>
-						{this.state.todos.map((todo) => (
+						{this.state.iots.map((iot) => (
 							<Grid item xs={12} sm={6}>
 								<Card className={classes.root} variant="outlined">
 									<CardContent>
 										<Typography variant="h5" component="h2">
-											{todo.title}
+											id is {iot.iotId}
 										</Typography>
+										<Typography variant="h3" component="h2">
+											{iot.title}
+										</Typography>
+										
 										<Typography className={classes.pos} color="textSecondary">
-											{dayjs(todo.createdAt).fromNow()}
+											{dayjs(iot.createdAt).fromNow()}
 										</Typography>
 										<Typography variant="body2" component="p">
-											{`${todo.body.substring(0, 65)}`}
+											{`${iot.body.substring(0, 65)}`}
 										</Typography>
 									</CardContent>
 									<CardActions>
-										<Button size="small" color="primary" onClick={() => this.handleViewOpen({ todo })}>
+										<Button size="small" color="primary" onClick={() => this.handleViewOpen({ iot })}>
 											{' '}
 											View{' '}
 										</Button>
-										<Button size="small" color="primary" onClick={() => this.handleEditClickOpen({ todo })}>
+										<Button size="small" color="primary" onClick={() => this.handleEditClickOpen({ iot })}>
 											Edit
 										</Button>
-										<Button size="small" color="primary" onClick={() => this.deleteTodoHandler({ todo })}>
+										<Button size="small" color="primary" onClick={() => this.deleteTodoHandler({ iot })}>
 											Delete
 										</Button>
+										
 									</CardActions>
 								</Card>
 							</Grid>
@@ -371,17 +404,47 @@ class todo extends Component {
 						<DialogContent dividers>
 							<TextField
 								fullWidth
-								id="todoDetails"
+								id="iotDetails"
+								name="iotId"
+								multiline
+								readonly
+								rows={1}
+								rowsMax={1}
+								value={this.state.iotId}
+								InputProps={{
+									disableUnderline: true
+								}}
+							/>
+							</DialogContent>
+						<DialogContent dividers>
+							<TextField
+								fullWidth
+								id="iotDetails"
 								name="body"
 								multiline
 								readonly
 								rows={1}
-								rowsMax={25}
+								rowsMax={5}
 								value={this.state.body}
 								InputProps={{
 									disableUnderline: true
 								}}
 							/>
+							</DialogContent>
+							<DialogContent dividers>
+							<TextField
+								fullWidth
+								id="iotDetails"
+								name="status"
+								readonly
+								rows={1}
+								rowsMax={1}
+								value={this.state.status}
+								InputProps={{
+									disableUnderline: true
+								}}
+							/>
+							
 						</DialogContent>
 					</Dialog>
 				</main>
@@ -390,4 +453,4 @@ class todo extends Component {
 	}
 }
 
-export default withStyles(styles)(todo);
+export default withStyles(styles)(Iot);

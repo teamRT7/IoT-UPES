@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import Account from '../components/account';
-import Todo from '../components/todo';
+import Iot from '../components/Iot';
 
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -156,12 +156,12 @@ class home extends Component {
 						</center>
 						<Divider />
 						<List>
-							<ListItem button key="Todo" onClick={this.loadiotPage}>
+							<ListItem button key="iot" onClick={this.loadiotPage}>
 								<ListItemIcon>
 									{' '}
 									<NotesIcon />{' '}
 								</ListItemIcon>
-								<ListItemText primary="Todo" />
+								<ListItemText primary="iot" />
 							</ListItem>
 
 							<ListItem button key="Account" onClick={this.loadAccountPage}>
@@ -182,7 +182,7 @@ class home extends Component {
 						</List>
 					</Drawer>
 
-					<div>{this.state.render ? <Account /> : <Todo />}</div>
+					<div>{this.state.render ? <Account /> : <Iot />}</div>
 				</div>
 			);
 		}
