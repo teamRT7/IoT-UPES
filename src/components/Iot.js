@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -18,7 +20,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CardContent from '@material-ui/core/CardContent';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
-//import BlurOnIcon from '@material-ui/icons/BlurOn';
+import BlurOnIcon from '@material-ui/icons/BlurOn';
 
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -105,7 +107,7 @@ class Iot extends Component {
 			title: '',
 			body: '',
 			iotId: '',
-			state: '',
+			status: '',
 			errors: [],
 			open: false,
 			uiLoading: true,
@@ -117,6 +119,15 @@ class Iot extends Component {
 		this.handleEditClickOpen = this.handleEditClickOpen.bind(this);
 		this.handleViewOpen = this.handleViewOpen.bind(this);
 	}
+
+	StatusIcon = (props)=> {
+		console.log(props.status)
+			if (props.status==="active") {
+		  return (<><WhatshotIcon colour="primary"/>
+		  <CircularProgress size={20} /></>);
+		}
+		return <BlurOnIcon />;
+	  };
 
 	handleChange = (event) => {
 		this.setState({
@@ -160,7 +171,7 @@ class Iot extends Component {
 		this.setState({
 			title: data.iot.title,
 			body: data.iot.body,
-			iotId: data.iot.iotId,
+			//iotId: data.iot.iotId,
 			status: data.iot.status,
 			buttonType: 'Edit',
 			open: true
@@ -222,12 +233,18 @@ class Iot extends Component {
 				body: this.state.body,
 				status: this.state.status,
 			};
+			const edituseriot = {
+				
+				title: this.state.title,
+				body: this.state.body,
+				status: this.state.status,
+			};
 			let options = {};
 			if (this.state.buttonType === 'Edit') {
 				options = {
 					url: `/iot/${this.state.iotId}`,
 					method: 'put',
-					data: useriot
+					data: edituseriot
 				};
 			} else {
 				options = {
@@ -277,7 +294,7 @@ class Iot extends Component {
 					>
 						<AddCircleIcon style={{ fontSize: 60 }} />
 					</IconButton>
-					<Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+					<Dialog open={open} onClose={handleClose} TransitionComponent={Transition}>
 						<AppBar className={classes.appBar}>
 							<Toolbar>
 								<IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
@@ -350,6 +367,7 @@ class Iot extends Component {
 										value={this.state.status}
 									/>
 								</Grid>
+								<this.StatusIcon status={this.state.status} />
 							</Grid>
 						</form>
 					</Dialog>
@@ -371,6 +389,9 @@ class Iot extends Component {
 										</Typography>
 										<Typography variant="body2" component="p">
 											{`${iot.body.substring(0, 65)}`}
+										</Typography>
+										<Typography>
+										<this.StatusIcon status={iot.status} />
 										</Typography>
 									</CardContent>
 									<CardActions>

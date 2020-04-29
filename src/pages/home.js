@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import Account from '../components/account';
 import Iot from '../components/Iot';
-
+import WhatshotIcon from '@material-ui/icons/Whatshot';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -20,8 +20,12 @@ import NotesIcon from '@material-ui/icons/Notes';
 import Avatar from '@material-ui/core/Avatar';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import BlurOnIcon from '@material-ui/icons/BlurOn';
 import { authMiddleWare } from '../util/auth';
+
+
+//import Button from '@material-ui/core/Button';
+
 
 const drawerWidth = 240;
 
@@ -134,7 +138,9 @@ class home extends Component {
 					<AppBar position="fixed" className={classes.appBar}>
 						<Toolbar>
 							<Typography variant="h6" noWrap>
-								iotApp
+							
+  								IOT APP 
+							
 							</Typography>
 						</Toolbar>
 					</AppBar>
@@ -161,7 +167,7 @@ class home extends Component {
 									{' '}
 									<NotesIcon />{' '}
 								</ListItemIcon>
-								<ListItemText primary="iot" />
+								<ListItemText primary="IOT DEVICES" />
 							</ListItem>
 
 							<ListItem button key="Account" onClick={this.loadAccountPage}>
@@ -178,6 +184,22 @@ class home extends Component {
 									<ExitToAppIcon />{' '}
 								</ListItemIcon>
 								<ListItemText primary="Logout" />
+							</ListItem>
+
+							<ListItem >
+								<ListItemIcon>
+									{' '}
+									<WhatshotIcon colour="orange" />{' '}
+								</ListItemIcon>
+								<ListItemText primary="active" />
+							</ListItem>
+
+							<ListItem >
+								<ListItemIcon>
+									{' '}
+									<BlurOnIcon />{' '}
+								</ListItemIcon>
+								<ListItemText primary=" ! active " />
 							</ListItem>
 						</List>
 					</Drawer>
