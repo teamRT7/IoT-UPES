@@ -115,7 +115,7 @@ class home extends Component {
 				});
 			})
 			.catch((error) => {
-				if (error.response.status === 403) {
+				if (error.status === 403) {
 					this.props.history.push('/login');
 				}
 				console.log(error);
