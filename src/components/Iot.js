@@ -171,7 +171,7 @@ class Iot extends Component {
 		this.setState({
 			title: data.iot.title,
 			body: data.iot.body,
-			//iotId: data.iot.iotId,
+			iotId: data.iot.iotId,
 			status: data.iot.status,
 			buttonType: 'Edit',
 			open: true
