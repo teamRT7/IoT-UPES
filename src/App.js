@@ -5,7 +5,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import login from './pages/login';
 import signup from './pages/signup';
 import home from './pages/home';
-
+import back from './images/Untitled Diagram.vpd.png';
 
 const theme = createMuiTheme({
 	palette: {
@@ -22,7 +22,7 @@ function App() {
 	return (
 		<MuiThemeProvider theme={theme}>
 			<Router>
-				<div>
+				<div styles={{ backgroundImage:`url(${back})` }}>
 					<Switch>
 						<Route exact path="/" component={home} />
 						<Route exact path="/login" component={login} />
