@@ -91,8 +91,16 @@ class home extends Component {
 			lastName: '',
 			profilePicture: '',
 			uiLoading: true,
-			imageLoading: false
-		};
+			imageLoading: false,
+			
+			email: '',
+			phoneNumber:'',
+			country: '',
+			username: '',
+			
+			userId:'',
+			
+			};
 	}
 
 	componentWillMount = () => {
@@ -107,11 +115,12 @@ class home extends Component {
 					firstName: response.data.userCredentials.firstName,
 					lastName: response.data.userCredentials.lastName,
 					email: response.data.userCredentials.email,
+					userId: response.data.userCredentials.userId,
 					phoneNumber: response.data.userCredentials.phoneNumber,
 					country: response.data.userCredentials.country,
 					username: response.data.userCredentials.username,
 					uiLoading: false,
-					profilePicture: response.data.userCredentials.imageUrl
+					profilePicture: response.data.userCredentials.imageUrl,
 				});
 			})
 			.catch((error) => {
@@ -139,9 +148,10 @@ class home extends Component {
 						<Toolbar>
 							<Typography variant="h6" noWrap>
 							
-  								IOT APP 
+  								IOT APP                 
 							
 							</Typography>
+							
 						</Toolbar>
 					</AppBar>
 					<Drawer
@@ -200,6 +210,9 @@ class home extends Component {
 									<BlurOnIcon />{' '}
 								</ListItemIcon>
 								<ListItemText primary=" ! active " />
+							</ListItem>
+							<ListItem>
+								
 							</ListItem>
 						</List>
 					</Drawer>
