@@ -26,6 +26,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { authMiddleWare } from '../util/auth';
+import Switch from '@material-ui/core/Switch';
 
 
 
@@ -112,12 +113,14 @@ class Iot extends Component {
 			open: false,
 			uiLoading: true,
 			buttonType: '',
+			switchstatus: true,
 			viewOpen: false
 		};
 
 		this.deleteTodoHandler = this.deleteTodoHandler.bind(this);
 		this.handleEditClickOpen = this.handleEditClickOpen.bind(this);
 		this.handleViewOpen = this.handleViewOpen.bind(this);
+		this.togglestatus = this.togglestatus.bind(this);
 	}
 
 	StatusIcon = (props)=> {
@@ -166,6 +169,31 @@ class Iot extends Component {
 				console.log(err);
 			});
 	}
+
+	togglestatus = (data)=>{
+		
+		authMiddleWare(this.props.history);
+		const authToken = localStorage.getItem('AuthToken');
+		axios.defaults.headers.common = { Authorization: `${authToken}` };
+		let iotId = data.iot.iotId;
+		
+		let edituseriot = {
+				
+			title: data.iot.title,
+			body: data.iot.body,
+			status: data.iot.status==="active"?"inactive":"active",
+		};
+		
+		axios
+			.put(`iot/${iotId}`,edituseriot)
+			.then(() => {
+				this.setState()
+				window.location.reload();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	handleEditClickOpen(data) {
 		this.setState({
@@ -223,6 +251,8 @@ class Iot extends Component {
 				open: true
 			});
 		};
+
+		
 
 		const handleSubmit = (event) => {
 			authMiddleWare(this.props.history);
@@ -383,17 +413,21 @@ class Iot extends Component {
 										<Typography variant="h3" component="h2">
 											{iot.title}
 										</Typography>
-										
 										<Typography className={classes.pos} color="textSecondary">
 											{dayjs(iot.createdAt).fromNow()}
 										</Typography>
 										<Typography variant="body2" component="p">
 											{`${iot.body.substring(0, 65)}`}
 										</Typography>
-										<Typography>
+										</CardContent>	
+
+										<CardActions>
 										<this.StatusIcon status={iot.status} />
-										</Typography>
-									</CardContent>
+										
+										
+										<Switch checked={iot.status==="active"?true:false} onChange={() => this.togglestatus({ iot })}  > </Switch>
+										</CardActions>
+									
 									<CardActions>
 										<Button size="small" color="primary" onClick={() => this.handleViewOpen({ iot })}>
 											{' '}
@@ -465,6 +499,7 @@ class Iot extends Component {
 									disableUnderline: true
 								}}
 							/>
+							<this.StatusIcon status={this.state.status} />
 							
 						</DialogContent>
 					</Dialog>

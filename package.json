@@ -40,5 +40,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy":"https://us-central1-iot-upes.cloudfunctions.net/api"
+  "proxy": "https://us-central1-iot-upes.cloudfunctions.net/api"
 }
